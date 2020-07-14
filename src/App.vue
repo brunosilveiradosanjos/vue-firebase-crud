@@ -33,7 +33,17 @@ export default {
   },
   methods: {
     submit() {
-      console.log(this.user);
+      this.$http
+        .post("https://vuejs-http-1f05a.firebaseio.com/data.json", this.user)
+        .then(
+          res => {
+            console.log(res);
+          },
+          error => {
+            console.error(error);
+          }
+        );
+      // console.log(this.user);
     }
   }
 };
