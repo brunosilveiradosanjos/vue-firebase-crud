@@ -13,6 +13,17 @@
             <input type="text" class="form-control" v-model="user.email" />
           </div>
           <button class="btn btn-primary" @click="submit">Submit</button>
+          <hr />
+          <button class="btn btn-primary" @click="fetchData">Get Data</button>
+          <br />
+          <br />
+          <ul class="list-group">
+            <li
+              class="list-group-item"
+              v-for="(user,index) in users"
+              :key="index"
+            >{{index}} {{user.username}} - {{user.email}}</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -28,22 +39,58 @@ export default {
       user: {
         username: "",
         email: ""
-      }
+      },
+      users: []
     };
   },
   methods: {
-    submit() {
-      this.$http
-        .post("https://vuejs-http-1f05a.firebaseio.com/data.json", this.user)
-        .then(
-          res => {
-            console.log(res);
-          },
-          error => {
-            console.error(error);
-          }
+    // async / await
+    async submit() {
+      try {
+        const res = await this.$http.post(
+          "https://vuejs-http-1f05a.firebaseio.com/data.json",
+          this.user
         );
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+
+      // Promise
+      // this.$http
+      //   .post("https://vuejs-http-1f05a.firebaseio.com/data.json", this.user)
+      //   .then(
+      //     res => {
+      //       console.log(res);
+      //     },
+      //     error => {
+      //       console.error(error);
+      //     }
+      //   );
       // console.log(this.user);
+    },
+    fetchData() {
+      // try {
+      //   const res = await this.$http.get(
+      //     "https://vuejs-http-1f05a.firebaseio.com/data.json"
+      //   );
+      //   console.log(res.json());
+      // } catch (error) {
+      //   console.log(error);
+      // }
+
+      this.$http
+        .get("https://vuejs-http-1f05a.firebaseio.com/data.json")
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          var resultArray = [];
+          for (let key in data) {
+            resultArray.push(data[key]);
+          }
+          this.users = resultArray;
+        });
     }
   }
 };
